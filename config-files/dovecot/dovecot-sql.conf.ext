@@ -1,0 +1,22 @@
+############################################################
+# DO NOT CHANGE MANUALLY
+##############################
+## Dovecot mysql configs
+
+driver = mysql
+connect = host=127.0.0.1 dbname=$DB_POSTFIX user=dovecot password=$DB_DEVECOT_PASSWORD
+
+password_query = SELECT username AS user, password, \
+  concat('$MAIL_DIR/mail/',maildir) AS userdb_home, \
+  5000 AS userdb_uid, 5000 AS userdb_gid, \
+  concat('maildir:$MAIL_DIR/mail/',maildir) as userdb_mail_location \
+  FROM mailbox \
+  WHERE username = '%u' AND active = 1
+
+# For LDA:
+user_query = SELECT concat('$MAIL_DIR/mail/',maildir) AS home, \
+  'vmail' as uid, 'vmail' as gid, \
+  concat('$MAIL_DIR/mail/',maildir) AS mail \
+  FROM mailbox WHERE username = '%u'
+
+

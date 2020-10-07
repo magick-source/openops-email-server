@@ -1,0 +1,8 @@
+# DO NOT CHANGE MANUALLY
+#################################
+user = postfix
+password = $DB_POSTFIX_PASSWORD
+dbname = $DB_POSTFIX
+hosts = 127.0.0.1
+query = SELECT username FROM mailbox WHERE username='%s' AND active = '1'
+

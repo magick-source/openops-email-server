@@ -1,0 +1,34 @@
+rewrite_header Subject [*** SPAM _SCORE_ ***]
+report_safe 0
+
+trusted_networks ${MX_SPAM_TRUST_NETWORKS}
+lock_method flock
+
+required_score 3.5
+
+use_bayes 1
+bayes_auto_learn 1
+
+bayes_ignore_header X-Bogosity
+bayes_ignore_header X-Spam-Flag
+bayes_ignore_header X-Spam-Status
+
+ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+
+shortcircuit USER_IN_WHITELIST       on
+shortcircuit USER_IN_DEF_WHITELIST   on
+shortcircuit USER_IN_ALL_SPAM_TO     on
+shortcircuit SUBJECT_IN_WHITELIST    on
+
+shortcircuit USER_IN_BLACKLIST       on
+shortcircuit USER_IN_BLACKLIST_TO    on
+shortcircuit SUBJECT_IN_BLACKLIST    on
+
+shortcircuit ALL_TRUSTED             on
+
+shortcircuit BAYES_99                spam
+shortcircuit BAYES_00                ham
+
+endif # Mail::SpamAssassin::Plugin::Shortcircuit
+
+
