@@ -26,7 +26,7 @@ debian_version=$( cat /etc/debian_version )
 
 echo -e "$BLUE >> Running in Debian $YELLOW$debian_version$NOCOLOR\n\n"
 
-echo "$BLUE >> Installing dependenvies$NOCOLOW"
+echo "$BLUE >> Installing dependenvies$NOCOLOR"
 apt-get -y install git
 
 
