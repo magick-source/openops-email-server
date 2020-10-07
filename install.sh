@@ -29,4 +29,8 @@ echo -e "$BLUE >> Running in Debian $YELLOW$debian_version$NOCOLOR\n\n"
 echo "$BLUE >> Installing dependenvies$NOCOLOR"
 apt-get -y install git
 
+OPENOPS_MAIL_GIT=${OPENOPS_MAIL_GIT:-"http://magick-source.net/OpenOps/email-server.git"}
+
+git clone $OPENOPS_MAIL_GIT /tmp/email-server
+
 
