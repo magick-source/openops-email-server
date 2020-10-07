@@ -22,7 +22,7 @@ if [ ! -f /etc/debian_version ]; then
   exit 1;
 fi
 
-$debian_version = $( cat /etc/debian_version )
+debian_version=$( cat /etc/debian_version )
 
 echo "$BLUE >> Running in Debian $debian_version$NOCOLOR"
 
