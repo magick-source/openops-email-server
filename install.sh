@@ -76,7 +76,12 @@ if [ -d $OPENOPS_MAIL_DIR ]; then
 
 fi
 
-if [ ! -d $OPENOPS_MAIL_DIR ]; then
+if [ -d $OPENOPS_MAIL_DIR ]; then
+
+  cd "$OPENOPS_MAIN_DIR"
+  git pull --rebase
+
+else
 
   echo -e "$BLUE -- cloning '$YELLOW$OPENOPS_MAIL_GIT$BLUE'$NOCOLOR"
   git clone "$OPENOPS_MAIL_GIT" "$OPENOPS_MAIL_DIR"
@@ -110,18 +115,21 @@ source $OPENOPS_MAIL_DIR/common/roundcube.sh
 # install postfixadmin
 source $OPENOPS_MAIL_DIR/common/postfixadmin.sh
 
+# configure lighttpd
+source $OPENOPS_MAIL_DIR/setup/lighttpd.sh
+
+# setup certificates
+source $OPENOPS_MAIL_DIR/setup/certificates.sh
+
 # configure spamassassin
 source $OPENOPS_MAIL_DIR/setup/antispam.sh
 
 # configure postfix and dovecot
 source $OPENOPS_MAIL_DIR/setup/postfix-config.sh
 
-# configure lighttpd
-source $OPENOPS_MAIL_DIR/setup/lighttpd.sh
+# configure webmail and pfadmin hosts
+source $OPENOPS_MAIL_DIR/setup/lighttpd-ssl.sh
 
 # reload/restart the services
 source $OPENOPS_MAIL_DIR/common/reload.sh
-
-# setup certificates
-source $OPENOPS_MAIL_DIR/setup/certificates.sh
 

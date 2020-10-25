@@ -1,8 +1,8 @@
 
 ENABLED=1
 
-OPTIONS="--create-prefs --max-children 5 --helper-home-dir=/servers/spamassassin -s /servers/spamassassin/spamd.log"
-PIDFILE="/servers/spamassassin/spamd.pid"
+OPTIONS="--create-prefs --max-children 5 --helper-home-dir=$MAIL_DIR/spamassassin -s $MAIL_DIR/spamassassin/spamd.log"
+PIDFILE="$MAIL_DIR/spamassassin/spamd.pid"
 
 CRON=1
 

@@ -16,11 +16,8 @@ fi
 render_file lighttpd/10-http-only.conf \
             /etc/lighttpd/conf-enabled/10-http-only.conf
 
-render_file lighttpd/50-pfadmin.conf \
-            /etc/lighttpd/conf-enabled/50-pfadmin.conf
+say $YELLOW " -- restarting lighttpd to reload configs"
 
-render_file lighttpd/50-webmail.conf \
-            /etc/lighttpd/conf-enabled/50-webmail.conf
-
+/etc/init.d/lighttpd restart
 
 say $BLUE " ++ done with lighttpd configs\n\n"
