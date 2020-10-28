@@ -12,9 +12,9 @@
 
 $config = array();
 
-$config['db_dsnw'] = 'mysql://roundcube:$DB_ROUNDCUBE_PASSWORD@localhost/$DB_ROUNDCUBE';
-$config['default_host'] = 'ssl://localhost';
-$config['smtp_server'] = '';
+$config['db_dsnw'] = 'mysqli://roundcube:$DB_ROUNDCUBE_PASSWORD@localhost/$DB_ROUNDCUBE';
+$config['default_host'] = 'tls://$MX_HOSTNAME';
+$config['smtp_server'] = 'tls://$MX_HOSTNAME';
 
 $config['product_name'] = 'Roundcube Webmail';
 
@@ -32,3 +32,8 @@ $config['plugins'] = array(
 
 // skin name: folder from skins/
 $config['skin'] = 'larry';
+
+$config['log_driver'] = 'syslog';
+
+$config['temp_dir'] = '$MAIL_DIR/temp/roundcube';
+

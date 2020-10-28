@@ -96,7 +96,6 @@ source $OPENOPS_MAIL_DIR/common/functions.sh
 # collect configuration
 source $OPENOPS_MAIL_DIR/common/settings.sh
 
-
 # install all the stuff we need from debian
 source $OPENOPS_MAIL_DIR/common/packages.sh
 
@@ -132,4 +131,7 @@ source $OPENOPS_MAIL_DIR/setup/lighttpd-ssl.sh
 
 # reload/restart the services
 source $OPENOPS_MAIL_DIR/common/reload.sh
+
+# setup postfixadmin
+source $OPENOPS_MAIL_DIR/common/postfixadmin-setup.sh
 

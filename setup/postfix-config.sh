@@ -4,6 +4,8 @@ set -e
 
 say $BLUE ">> Setting up postfix/dovecot config files"
 
+render_file postfix/mailname /etc/mailname
+
 render_file postfix/main.cf /etc/postfix/main.cf
 
 render_file postfix/dynamicmaps.cf /etc/postfix/dynamicmaps.cf
@@ -39,12 +41,5 @@ render_file dovecot/dovecot-sql.conf.ext \
             /etc/dovecot/dovecot-sql.conf.ext
 
 say $BLUE " ++ done with postfix/dovecot config\n\n" 
-
-
-# /etc/lighttpd/conf-enabled/00-fastcgi.conf
-
-# /etc/lighttpd/conf-enabled/50-pfadmin.conf
-
-# /etc/lighttpd/conf-enabled/50-webmail.conf
 
 

@@ -4,7 +4,7 @@
 ## Dovecot mysql configs
 
 driver = mysql
-connect = host=127.0.0.1 dbname=$DB_POSTFIX user=dovecot password=$DB_DEVECOT_PASSWORD
+connect = host=127.0.0.1 dbname=$DB_POSTFIX user=dovecot password=$DB_DOVECOT_PASSWORD
 
 password_query = SELECT username AS user, password, \
   concat('$MAIL_DIR/mail/',maildir) AS userdb_home, \

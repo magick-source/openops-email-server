@@ -16,7 +16,7 @@ if [ -d /tmp/postfixadmin ]; then
   done
 
 else
-  mkdir /tmp/postfixadmin
+  create_directory /tmp/postfixadmin
 fi
 
 
@@ -33,17 +33,23 @@ fi
 
 echo -e "$YELLOW -- copying to sister directory$NOCOLOR"
 
-mkdir $MAIL_DIR/htdocs/pfadmin-new
+create_directory $MAIL_DIR/htdocs/pfadmin-new
 pushd $MAIL_DIR/htdocs/pfadmin-new
 
 tar --strip-components=1 --no-same-owner -zxf $pfadmin_tgz
 
 # templates_c needs to be writable for smarty templates cache
-mkdir templates_c
-chmod -R 777 templates_c
+create_directory templates_c www-data 755
 
-render_file pfadmin/config.inc.php \
-            $MAIL_DIR/htdocs/pfadmin-new/config.inc.php
+PFADMIN_SETUPPW_SALT=$( pwgen 32 1 )
+PFADMIN_SETUP_SUM=$(
+    echo -n "$PFADMIN_SETUPPW_SALT:$PFADMIN_SETUPPW" \
+    | sha1sum - | cut -d ' ' -f 1
+  )
+export PFADMIN_SETUP_CHECK="$PFADMIN_SETUPPW_SALT:$PFADMIN_SETUP_SUM"
+
+render_file pfadmin/config.local.php \
+            $MAIL_DIR/htdocs/pfadmin-new/config.local.php
 
 cd $MAIL_DIR/htdocs
 

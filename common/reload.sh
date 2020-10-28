@@ -4,6 +4,8 @@ set -e
 
 say $BLUE ">> Reloading/restarting services to update configs"
 
+postalias /etc/aliases
+
 /etc/init.d/postfix restart
 
 /etc/init.d/dovecot restart
