@@ -1,0 +1,4 @@
+
+
+#mail._domainkey.example.net example.net:mail:/etc/opendkim/keys/example.net/mail.private
+

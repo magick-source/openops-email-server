@@ -138,3 +138,6 @@ source $OPENOPS_MAIL_DIR/common/postfixadmin-setup.sh
 # setup fail2ban
 source $OPENOPS_MAIL_DIR/setup/fail2ban.sh
 
+# setup dkim base
+source $OPENOPS_MAIL_DIR/setup/dkim.sh
+

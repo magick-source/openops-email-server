@@ -26,6 +26,9 @@ apt-get -y install postfix postfix-mysql \
            dovecot-imapd dovecot-sieve dovecot-managesieved \
            postfix-policyd-spf-perl postgrey
 
+say $YELLOW "\n\n -- Installing opendkim"
+apt-get -y install opendkim opendkim-tools
+
 say $YELLOW "\n\n -- Installing antispam and antivirus"
 apt-get -y install spamassassin spamc clamav
 

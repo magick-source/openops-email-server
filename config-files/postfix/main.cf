@@ -70,3 +70,9 @@ proxy_read_maps = $local_recipient_maps $mydestination $virtual_alias_maps $virt
 
 compatibility_level = 2
 
+milter_protocol = 2
+milter_default_action = accept
+
+smtpd_milters = inet:localhost:12021
+non_smtpd_milters = inet:localhost:12021
+

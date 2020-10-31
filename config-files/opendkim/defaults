@@ -1,0 +1,13 @@
+######################################
+# DO NOT CHANGE MANUALLY
+####################
+# default options for opendkim
+
+RUNDIR=/var/run/opendkim
+
+SOCKET=inet:12021@localhost
+USER=opendkim
+GROUP=opendkim
+PIDFILE=$RUNDIR/$NAME.pid
+EXTRAAFTER=
+
