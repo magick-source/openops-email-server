@@ -16,6 +16,12 @@ fi
 render_file lighttpd/10-http-only.conf \
             /etc/lighttpd/conf-enabled/10-http-only.conf
 
+render_file lighttpd/redirect-to-ssl-index.php \
+            $MAIL_DIR/htdocs/http-only/$PFADMIN_HOSTNAME/index.php
+
+render_file lighttpd/redirect-to-ssl-index.php \
+            $MAIL_DIR/htdocs/http-only/$WEBMAIL_HOSTNAME/index.php
+
 say $YELLOW " -- restarting lighttpd to reload configs"
 
 /etc/init.d/lighttpd restart
