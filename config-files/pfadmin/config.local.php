@@ -23,4 +23,11 @@ $CONF['default_aliases'] = array(
   'webmaster'   => 'webmaster@$MX_MAIN_DOMAIN',
 );
 
+$CONF['transport_options'] = array(
+  'dovecot',  // for dovecot delivery
+  'relay',    // for backup MX
+); // not allowing for any of the other at the moment
+
+$CONF['transport_default'] = 'dovecot';
+
 $CONF['show_footer_text'] = 'NO';

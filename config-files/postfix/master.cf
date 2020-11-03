@@ -69,5 +69,5 @@ policy-spf  unix  -       n       n       -       -     spawn
 dovecot   unix  -       n       n       -       -       pipe
     flags=DRhu user=vmail:vmail
     argv=/usr/lib/dovecot/deliver
-    -f ${sender} -d ${recipient}
+    -f ${sender} -d ${user}@${nexthop} -m ${extension}
 
