@@ -76,3 +76,7 @@ milter_default_action = accept
 smtpd_milters = inet:localhost:12021
 non_smtpd_milters = inet:localhost:12021
 
+content_filter = smtp-amavis:[127.0.0.1]:10024
+smtpd_proxy_options = speed_adjust
+
+

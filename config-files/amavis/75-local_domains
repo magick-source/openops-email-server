@@ -1,0 +1,16 @@
+use strict;
+
+$sql_select_policy = <<'EoQ';
+SELECT "Y" as local
+  FROM domain
+  WHERE CONCAT('@', domain) IN (%k)
+    AND active = '1'
+EoQ
+
+@lookup_sql_dsn= ([
+    'DBI:mysql:database=$DB_POSTFIX;host=127.0.0.1',
+    'amavis',
+    '$DB_AMAVIS_PASSWORD'
+  ]);
+
+1;

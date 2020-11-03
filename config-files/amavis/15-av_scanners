@@ -1,0 +1,12 @@
+use strict;
+
+@av_scanners = (
+  ['ClamAV-clamdscan', 'clamdscan', "--fdpass --stdout --no-summary {}",
+    [0], qr/:.*\sFOUND$/m, qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
+);
+
+@av_scanners_backup = (
+  ['ClamAV-clamscan', 'clamscan',
+    "--stdout --no-summary -r --tempdir=$TEMPBASE {}",
+    [0], qr/:.*\sFOUND$/m, qr/^.*?: (?!Infected Archive)(.*) FOUND$/m ],
+);

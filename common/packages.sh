@@ -29,8 +29,24 @@ apt-get -y install postfix postfix-mysql \
 say $YELLOW "\n\n -- Installing opendkim"
 apt-get -y install opendkim opendkim-tools
 
-say $YELLOW "\n\n -- Installing antispam and antivirus"
-apt-get -y install spamassassin spamc clamav
+say $YELLOW "\n\n -- Installing antispam"
+apt-get -y install spamassassin spamc
+
+say $YELLOW "\n\n -- Installing compression tools for antivirus"
+apt-get -y install arj bzip2 cabextract cpio rpm2cpio file gzip \
+           lhasa nomarch pax p7zip-full unzip zip lrzip \
+           lzip liblz4-tool lzop unrar-free xz-utils unar
+
+say $YELLOW "\n\n -- Installing antivirus"
+# amavis fails to start if it doesn't have a fqhn,
+# and you can set one in 05-node_id file, so let's do that
+# otherwise apt-get may fail here!
+if [ ! -f /etc/amavis/conf.d/05-node_id ]; then
+  create_directory /etc/amavis/conf.d
+  render_file amavis/05-node_id \
+              /etc/amavis/conf.d/05-node_id
+fi
+apt-get -y install clamav amavisd-new
 
 say $YELLOW "\n\n -- Installting certbox"
 apt-get -y install certbot

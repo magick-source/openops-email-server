@@ -1,0 +1,3 @@
+$myhostname = "$MX_HOSTNAME";
+
+1; 

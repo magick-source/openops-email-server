@@ -123,6 +123,9 @@ source $OPENOPS_MAIL_DIR/setup/certificates.sh
 # configure spamassassin
 source $OPENOPS_MAIL_DIR/setup/antispam.sh
 
+# configure amavis
+source $OPENOPS_MAIL_DIR/setup/amavis.sh
+
 # configure postfix and dovecot
 source $OPENOPS_MAIL_DIR/setup/postfix-config.sh
 

@@ -9,7 +9,7 @@ if [ ! -d $MAIL_DIR/spamassassin ]; then
 fi
 
 # spamassassin config
-MX_SPAM_TRUST_NETWORKS=${MX_SPAM_TRUST_NETWORKS:-127.0.0.1}
+MX_SPAM_TRUST_NETWORKS=${MX_SPAM_TRUST_NETWORKS:-''}
 export MX_SPAM_TRUST_NETWORKS
 
 render_file 'spamassassin/local.cf' '/etc/spamassassin/local.cf'

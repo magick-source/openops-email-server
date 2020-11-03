@@ -27,6 +27,11 @@ GRANT SELECT ON $DB_POSTFIX.*
   TO 'dovecot'@'localhost'
   IDENTIFIED by '$DB_DOVECOT_PASSWORD';
 
+-- access to amavis
+GRANT SELECT ON $DB_POSTFIX.*
+  TO 'amavis'@'localhost'
+  IDENTIFIED by '$DB_AMAVIS_PASSWORD';
+
 EoQ
 
 echo -e "$YELLOW -- creating database for roundcube webmail$NOCOLOR"
