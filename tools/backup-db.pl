@@ -3,6 +3,25 @@
 use strict;
 use v5.18;
 
+# This script is the preparative part of disaster recovery
+# which we never want to use, but are very happy when we
+# need to do it and have the tools to make it happen.
+# This script create files that allows the recovery of the
+# configs at the point in time when the files were generated
+#
+# What is done with this files defines the options available
+# when a problem happens and we need to restore the server.
+#
+# Some opens are:
+# - backup them using some backup system
+# - pushing this files to a git repo
+# - zip them and send them by email [hopefully to a different server]
+# - ... - just keep them save somewhere else, otherwise there is no point
+#
+# The idea is that you run this script to create the backup files
+#   and then keep them safe, somewhere. To restore them use the restore-db.pl
+#   script that.
+
 use DBI;
 use Text::CSV;
 use Config::Tiny;
@@ -15,6 +34,7 @@ my %defaults = (
     dbuser    => 'root',
     basedir   => '.',
     config    => "$ENV{HOME}/.openops_email.ini",
+    verbose   => 1
 );
 
 my $config_file = $defaults{ config };
@@ -23,9 +43,11 @@ my $database    = undef;
 my $dbuser      = undef;
 my $dbpass      = undef;
 my $basedir     = undef;
-my $verbose     = 1;
+my $delete_old  = undef;
+my $verbose     = undef;
 my $help        = 0;
 
+my %unused_files = ();
 
 init();
 eval {
@@ -46,9 +68,56 @@ if ($help) {
 
 my $csv = Text::CSV->new({eol => $/ });
 
+find_existing_files() if $delete_old;
 dump_postfix_data();
+delete_unused_files() if $delete_old;
 
-exit 0; #just to be clean that nothing else happens
+exit 0; #just to be clear that nothing else happens
+
+
+
+sub find_existing_files {
+  my ($dir) = @_;
+
+  trace( 1 => "Find the old files" ) unless $dir;
+  
+  $dir = $basedir unless $dir;
+
+  my @files = <"$dir/*">;
+  for my $fname ( @files ) {
+    if (-f $fname) {
+      trace( 3 => $fname );
+      $unused_files{ $fname } = undef;
+    } elsif (-d $fname) {
+      find_existing_files( $fname );
+    } else {
+      warn "interesting fname: $fname";
+    }
+  }
+}
+
+sub delete_unused_files {
+  my %dirs2check = ();
+
+  return unless keys %unused_files;
+
+  trace( 1 => "Removing unused files" );
+  for my $fname ( sort keys %unused_files ) {
+    trace( 2 => "Removing $fname");
+    unlink $fname;
+    (my $dir = $fname) =~ s{/[^/]+\z}[];
+    $dirs2check{ $dir }++;
+  }
+
+  for my $dir (reverse sort keys %dirs2check) {
+    my @files = <"$dir/*">;
+    unless (@files) {
+      trace( 2 => "Removing empty directory '$dir'");
+      rmdir $dir;
+    }
+  }
+
+}
 
 sub dump_postfix_data {
   trace(4 => 'Starting the dump');
@@ -77,7 +146,10 @@ EoQ
     return;
   }
 
-  open my $domfh, '>', "$basedir/domains.csv";
+  open my $domfh, '>', "$basedir/domains.csv"
+    or die "Error opening $basedir/domains.csv: $!";
+
+  delete $unused_files{ "$basedir/domains.csv" };
 
   sth2file( $sth, $domfh, $row,
       sub {
@@ -113,7 +185,10 @@ EoQ
   return unless $sth->rows;
   trace(2 => "Dumping alias domains");
 
-  open my $aldomfh, '>', "$dir/alias_domain.csv";
+  open my $aldomfh, '>', "$dir/alias_domain.csv"
+    or die "Error opening $dir/alias_domain.csv: $!";
+
+  delete $unused_files{ "$dir/alias_domain.csv" };
 
   sth2file( $sth, $aldomfh, $row,
       sub { trace( 3 => $row->{alias_domain} ) }
@@ -133,7 +208,10 @@ EoQ
   return unless $sth->rows;
   trace(2 => "Dumping admin accounts");
 
-  open my $admfh, '>', "$dir/admin.csv";
+  open my $admfh, '>', "$dir/admin.csv"
+    or die "Error opening $dir/admin.csv: $!";
+
+  delete $unused_files{ "$dir/admin.csv" };
 
   sth2file( $sth, $admfh, $row,
       sub { trace( 3 => $row->{username} ) }
@@ -160,14 +238,18 @@ sub dump_domain {
 sub dump_mailboxes {
   my ($dir, $domain) = @_;
 
-  my ($sth, $row) = run_query(<<EoQ);
+  my ($sth, $row) = run_query(<<EoQ, $domain);
 SELECT * FROM mailbox WHERE domain = ?
 EoQ
   
   return unless $sth->rows;
   trace( 2 => "Dumping mailboxes for '$domain'");
 
-  open my $mxfh, '>', "$dir/mailbox.csv";
+  open my $mxfh, '>', "$dir/mailbox.csv"
+    or die "Error opening $dir/mailbox.csv: $!";
+  
+  delete $unused_files{ "$dir/mailbox.csv" };
+  
   sth2file( $sth, $mxfh, $row,
       sub { trace( 3 => $row->{username} ) },
     );
@@ -186,7 +268,11 @@ EoQ
   return unless $sth->rows;
   trace( 2 => "Dumping alias for '$domain'" );
 
-  open my $alfh, '>', "$dir/alias.csv";
+  open my $alfh, '>', "$dir/alias.csv"
+    or die "Error opening $dir/alias.csv: $!";
+  
+  delete $unused_files{ "$dir/alias.csv" };
+  
   sth2file( $sth, $alfh, $row,
       sub { trace( 3 => $row->{address} ) }
     );
@@ -205,7 +291,11 @@ EoQ
   return unless $sth->rows;  
   trace( 2 => "Dumping domain admin for $domain" );
 
-  open my $domafh, '>', "$dir/domain_admins.csv";
+  open my $domafh, '>', "$dir/domain_admins.csv"
+    or die "Error opening $dir/domain_admins.csv: $!";
+  
+  delete $unused_files{ "$dir/domain_admins.csv" };
+  
   sth2file( $sth, $domafh, $row,
       sub { trace(3 => $row->{username}) }
     );
@@ -250,7 +340,8 @@ sub get_dbh {
   $dbh ||= DBI->connect(
                 "DBI:mysql:database=$database;host=$dbhost",
                 $dbuser,
-                $dbpass
+                $dbpass,
+                { RaiseError => 1 }
             );
 
   return $dbh;
@@ -285,13 +376,16 @@ sub trace {
 }
 
 sub init {
+
+  my $askpassword = undef;
   GetOptions(
     'config_file=s' => \$config_file,
     'database=s'    => \$database,
     'hostname=s'    => \$dbhost,
     'user_db=s'     => \$dbuser,
-    'pass_db=s'     => \$dbpass,
+    'password'      => \$askpassword,
     'basedir=s'     => \$basedir,
+    'delete_old|del'=> \$delete_old,
     'verbose|v'     => \$verbose,
     'vv'            => sub { $verbose = 2 },
     'vvv'           => sub { $verbose = 3 },
@@ -304,11 +398,13 @@ sub init {
 
     if ( $config and $config->{_} ) {
       my $cfg = $config->{_};
-      $database ||= $cfg->{database};
-      $dbhost   ||= $cfg->{hostname};
-      $dbuser   ||= $cfg->{username};
-      $dbpass   ||= $cfg->{password};
-      $basedir  ||= $cfg->{basedir};
+      $database   ||= $cfg->{database};
+      $dbhost     ||= $cfg->{hostname};
+      $dbuser     ||= $cfg->{username};
+      $dbpass     ||= $cfg->{password};
+      $basedir    ||= $cfg->{basedir};
+      $delete_old //= $cfg->{delete} // $cfg->{'delete-old'};
+      $verbose    //= $cfg->{versbose};
     }
   }
 
@@ -316,6 +412,16 @@ sub init {
   $dbuser   ||= $defaults{dbuser};
   $basedir  ||= $defaults{basedir};
   $dbhost   ||= $defaults{dbhost};
+  $verbose  //= $defaults{verbose};
+
+  if ( $askpassword ) {
+    print "Please type the password for '$dbuser\@$dbhost\[$database]': ";
+    $dbpass = <>;
+    chomp($dbpass);
+  }
+
+  $basedir =~ s/^~/$ENV{HOME}/; #config needs to be expanded
+  $basedir =~ s{/\z}{};
 }
 
 sub help {
@@ -337,21 +443,28 @@ $0 Usage:
           the default is 'root'
           can be set with the config 'username'
 
-  --pass_db=<...>     - the password to use to connect to the database
-          the default is ''
+  --password          - ask the user to type the password to use to connect
+            to the database. the default password is ''
           - as the first version of this script was written in 2020,
             I don't expect that will ever work for anyone - specially
             together with user_db=root
-          can be set with the config 'password'
+          the password can be set with the config 'password'
 
   --basedir=<...>     - the base directory where the data in the database
             will be exported to.
           the default is the current directory
-    
+          can be set with the config 'basedir'
+
+  --delete_old        - delete old existing files that are not needed anymore
+          the default is false
+          can be set with the contig 'delete' or 'delete-old'
+
   -v|vv|vvv           - the level of verbosity you want
           the default is 1 (same as -v)
+          can be set with the config 'verbose'
 
   -q                  - disable verbosity completely
+          in the config use 'verbose=0' to achieve the same result
   
 EoH
 }
