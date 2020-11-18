@@ -71,6 +71,9 @@ source $OPENOPS_MAIL_DIR/setup/amavis.sh
 # configure postfix and dovecot
 source $OPENOPS_MAIL_DIR/setup/postfix-config.sh
 
+# configure the sieve filters
+source $OPENOPS_MAIL_DIR/setup/sieve-config.sh
+
 # configure webmail and pfadmin hosts
 source $OPENOPS_MAIL_DIR/setup/lighttpd-ssl.sh
 

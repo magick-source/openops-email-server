@@ -6,38 +6,47 @@ say $BLUE ">> Setting up certificates"
 
 say $YELLOW " -- testing if DNS is right"
 TEST_KEY=$(pwgen 62 1)
+TEST_FNAME=$(pwgen 12 1)
 
 pushd $MAIL_DIR/htdocs
-echo $TEST_KEY >http-only/$PFADMIN_HOSTNAME/.well-known/testfile
+echo $TEST_KEY >http-only/$PFADMIN_HOSTNAME/.well-known/$TEST_FNAME
 
-echo $TEST_KEY >http-only/$WEBMAIL_HOSTNAME/.well-known/testfile
+echo $TEST_KEY >http-only/$WEBMAIL_HOSTNAME/.well-known/$TEST_FNAME
 
-echo $TEST_KEY >http-only/$MX_HOSTNAME/.well-known/testfile
+echo $TEST_KEY >http-only/$MX_HOSTNAME/.well-known/$TEST_FNAME
 
 DNS_FAILED="NO"
 INVALUD_HOSTS=""
 set +e
 
-wget -O - -q --retry-connrefused http://$PFADMIN_HOSTNAME/.well-known/testfile
+wget -O - -q --retry-connrefused http://$PFADMIN_HOSTNAME/.well-known/$TEST_FNAME
 
 if [ ! $? -eq 0 ]; then
   INVALID_HOSTS=$PFADMIN_HOSTNAME
   DNS_FAILED="YES"
 fi
 
-wget -O - -q --retry-connrefused http://$WEBMAIL_HOSTNAME/.well-known/testfile
+wget -O - -q --retry-connrefused http://$WEBMAIL_HOSTNAME/.well-known/$TEST_FNAME
 if [ ! $? -eq 0 ]; then
   INVALID_HOSTS="$INVALID_HOSTS $WEBMAIL_HOSTNAME"
   DNS_FAILED="YES"
 fi
 
-wget -O - -q --retry-connrefused http://$MX_HOSTNAME/.well-known/testfile
+wget -O - -q --retry-connrefused http://$MX_HOSTNAME/.well-known/$TEST_FNAME
 if [ ! $? -eq 0 ]; then
   INVALID_HOSTS="$INVALID_HOSTS $MX_HOSTNAME"
   DNS_FAILED="YES"
 fi
 
 set -e
+
+rm http-only/$PFADMIN_HOSTNAME/.well-known/$TEST_FNAME
+
+rm http-only/$WEBMAIL_HOSTNAME/.well-known/$TEST_FNAME
+
+rm http-only/$MX_HOSTNAME/.well-known/$TEST_FNAME
+
+popd
 
 if [ "$DNS_FAILED" = "YES" ]; then
 
