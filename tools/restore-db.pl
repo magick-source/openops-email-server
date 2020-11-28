@@ -89,8 +89,21 @@ sub import_domain_mailboxes {
   my $fname = "$dir/mailbox.csv";
   return unless -f $fname;
   trace(2 => "Importing mailboxes for '$dom'");
+  my $sth = make_insert_sth(
+                'alias',
+                [qw(address goto domain active)],
+                'address'
+              );
+
   import_csv( $fname, 'mailbox', 'username', 3, sub {
-      _check_domain( @_, 'username', $dom )
+      my ($row) = @_;
+      my $res = _check_domain( @_, 'username', $dom );
+      if ( $res ) {
+        # this is needed for pfadmin - maybe they are already in the list
+        # of aliases, but if not we add it here!
+        $sth->execute( $row->{username}, $row->{username}, $row->{domain}, 1 ); 
+      }
+      return $res;
     });
 }
 
