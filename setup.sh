@@ -89,3 +89,6 @@ source $OPENOPS_MAIL_DIR/setup/fail2ban.sh
 # setup dkim base
 source $OPENOPS_MAIL_DIR/setup/dkim.sh
 
+# setup sending log summaries
+source $OPENOPS_MAIL_DIR/setup/logchecking.sh
+

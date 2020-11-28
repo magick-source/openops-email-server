@@ -54,4 +54,7 @@ apt-get -y install certbot
 say $YELLOW "\n\n -- Installing tools dependencies"
 apt-get -y install libtext-csv-perl libconfig-tiny-perl 
 
+say $YELLOW "\n\n -- Installing log tools"
+apt-get -y install pflogsumm
+
 say $BLUE "\n++ Packages done\n\n";
