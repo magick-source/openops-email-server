@@ -419,6 +419,8 @@ sub init {
     $dbpass = <>;
     chomp($dbpass);
   }
+  $dbpass ||= $ENV{DB_POSTFIX_PASSWORD}
+    if $ENV{DB_POSTFIX_PASSWORD};
 
   $basedir =~ s/^~/$ENV{HOME}/; #config needs to be expanded
   $basedir =~ s{/\z}{};
