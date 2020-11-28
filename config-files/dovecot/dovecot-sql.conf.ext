@@ -16,7 +16,7 @@ password_query = SELECT username AS user, password, \
 # For LDA:
 user_query = SELECT concat('$MAIL_DIR/mail/',maildir) AS home, \
   'vmail' as uid, 'vmail' as gid, \
-  concat('$MAIL_DIR/mail/',maildir) AS mail \
+  concat('maildir:$MAIL_DIR/mail/',maildir) AS mail \
   FROM mailbox WHERE username = '%u'
 
 
