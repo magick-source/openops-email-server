@@ -346,6 +346,9 @@ sub init {
     $dbpass = Term::ReadKey::ReadLine(0);
     Term::ReadKey::ReadMode('normal');
     chomp($dbpass);
+  } else {
+    $dbpass = $ENV{DB_PFRESTORER_PWD}
+      if $ENV{DB_PFRESTORER_PWD};
   }
 
   $basedir =~ s{/\z}{};
@@ -369,12 +372,14 @@ $0 Usage:
           - as the first version of this script was written in 2020,
             I don't expect that will ever work for anyone - specially
             together with user_db=root
+          - the password can also be set using the ENV variable
+            DB_PFRESTORER_PWD
 
   --basedir=<...>     - the base directory where the data in the database
             will be exported to.
           the default is the current directory
 
-  --reser_db          - drop all the data that exists in the database
+  --reset_db          - drop all the data that exists in the database
           the default is false
 
   -v|vv|vvv           - the level of verbosity you want

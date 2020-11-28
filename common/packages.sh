@@ -51,4 +51,7 @@ apt-get -y install clamav amavisd-new
 say $YELLOW "\n\n -- Installting certbox"
 apt-get -y install certbot
 
+say $YELLOW "\n\n -- Installing tools dependencies"
+apt-get -y install libtext-csv-perl libconfig-tiny-perl 
+
 say $BLUE "\n++ Packages done\n\n";
