@@ -23,6 +23,10 @@ $CONF['default_aliases'] = array(
   'webmaster'   => 'webmaster@$MX_MAIN_DOMAIN',
 );
 
+$CONF['recipient_delimiter'] = "+";
+
+$CONF['page_size'] = '250';
+
 $CONF['transport_options'] = array(
   'dovecot',  // for dovecot delivery
   'relay',    // for backup MX
