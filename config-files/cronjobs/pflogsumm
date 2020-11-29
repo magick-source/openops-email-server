@@ -2,5 +2,5 @@
 # Send a daily email with the summary of the mail.info log
 
 MAIL_TO=$POSTMASTER_EMAIL
-10 0 * * * /usr/sbin/pflogsumm -d yesterday -q --problems_first --verp_mung=2 /var/log/mail.info /var/log/mail.info.1
+10 0 * * * root /usr/sbin/pflogsumm -d yesterday -q --problems_first --verp_mung=2 /var/log/mail.info /var/log/mail.info.1
 
