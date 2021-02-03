@@ -34,4 +34,6 @@ $CONF['transport_options'] = array(
 
 $CONF['transport_default'] = 'dovecot';
 
+$CONF['password_expiration'] = 'NO';
+
 $CONF['show_footer_text'] = 'NO';
